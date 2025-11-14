@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+      integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+<style>
+        @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@400;700&display=swap');
+
+        body {
+            font-family: 'Sarabun', sans-serif;
+            background-color: #1E1E1E; 
+            color: #E0E0E0;           
+            margin: 0;
+            padding: 0;
+        }
+
+
+        .header-nav {
+            background-color: #2C2C2C; padding: 1rem 2rem;
+            display: flex; justify-content: space-between;
+            align-items: center; border-bottom: 1px solid #333;
+        }
+        .logo { font-size: 1.5rem; font-weight: bold; color: #FFFFFF; }
+        .search-bar-top input {
+            background-color: #333; border: 1px solid #444; border-radius: 5px;
+            padding: 0.5rem 1rem; color: #FFF; min-width: 300px;
+        }
+        .user-icons { color: #FFF; }
+
+        .sub-nav {
+            background-color: #252525; padding: 0.75rem 0;
+            text-align: center; border-bottom: 1px solid #333;
+        }
+        .sub-nav a {
+            color: #AAAAAA; text-decoration: none; margin: 0 1.5rem;
+            font-weight: bold; padding-bottom: 0.5rem;
+        }
+        .sub-nav a:hover { color: #FFFFFF; }
+
+
+
+        .page-container {
+            width: 70%;
+            max-width: 900px; 
+            margin: 2rem auto;
+        }
+
+        .main-title {
+            color: #FFFFFF;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            margin-top: 0;
+        }
+        
+        .notification-card {
+            background-color: #2C2C2C; 
+            border-radius: 8px;
+            overflow: hidden; 
+        }
+        
+        .notification-header {
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #444;
+        }
+        
+        .notification-header h2 {
+            margin: 0;
+            color: #FFFFFF;
+            font-size: 1.25rem;
+        }
+        
+        .mark-as-read-btn {
+            color: #A068D9;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+        .mark-as-read-btn:hover {
+            text-decoration: underline;
+        }
+        
+        
+        .notification-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .notification-item {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            padding: 1.25rem 2rem;
+            border-bottom: 1px solid #3a3a3a;
+            position: relative;
+            transition: background-color 0.2s ease;
+        }
+        .notification-list li:last-child .notification-item {
+            border-bottom: none;
+        }
+        
+        .notification-item:hover {
+            background-color: #333333; 
+        }
+
+
+        .notification-item.unread {
+            background-color: #333333; 
+        }
+        .notification-item.unread .noti-indicator {
+            width: 10px;
+            height: 10px;
+            background-color: #A068D9;
+            border-radius: 50%;
+            position: absolute;
+            right: 2rem;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        
+        .noti-icon {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .noti-content {
+            flex: 1;
+            line-height: 1.6;
+        }
+        
+        .noti-content .user-link {
+            color: #FFFFFF;
+            font-weight: bold;
+            text-decoration: none;
+        }
+        .noti-content .post-link {
+            color: #A068D9; 
+            font-weight: bold;
+            text-decoration: none;
+        }
+        .user-link:hover, .post-link:hover {
+            text-decoration: underline;
+        }
+
+        .noti-date {
+            font-size: 0.9rem;
+            color: #AAAAAA;
+            margin-top: 0.25rem;
+        }
+
+    </style>
+  </head>
+  <body>
+    <header class="main-header">
+      <div class="logo"><a href="index.html"style="color: #cf6679;">หลอน Story</a></div>
+      <div class="search-bar">
+        <input type="text" placeholder="ค้นหาโพสต์ ผู้ใช้ หรือ แท็ก..." />
+      </div>
+      <div class="user-nav">
+        <a href="noti.html" class="active" ><i class="fa-solid fa-bell" id="noti"></i></a>
+        <a href="comment.html"><i class="fa-solid fa-comment" id="chat"></i></a>
+        <a href="profile.html" ><i class="fa-solid fa-user"></i></a>
+      </div>
+    </header>
+    <div class="page-container">
+
+    <div class="page-container">
+        
+        <h1 class="main-title">การแจ้งเตือน</h1>
+
+        <div class="notification-card">
+            
+            <header class="notification-header">
+                <h2>การแจ้งเตือนล่าสุด</h2>
+                <a href="#" class="mark-as-read-btn">ทำเครื่องหมายว่าอ่านทั้งหมดแล้ว</a>
+            </header>
+
+            <ul class="notification-list">
+                <li class="notification-item unread">
+                    <span class="noti-icon">💬</span>
+                    <div class="noti-content">
+                        <a href="#" class="user-link">PKa kub P</a> 
+                        ได้แสดงความคิดเห็นในเรื่องเล่าของคุณ: 
+                        <a href="#" class="post-link">"ผีข้างบ้าน"</a>
+                        <div class="noti-date">5 นาทีที่แล้ว</div>
+                    </div>
+                    <span class="noti-indicator"></span>
+                </li>
+
+                <li class="notification-item unread">
+                    <span class="noti-icon">💜</span>
+                    <div class="noti-content">
+                        <a href="#" class="user-link">user-1998</a> 
+                        กดถูกใจเรื่องเล่าของคุณ:
+                        <a href="#" class="post-link">"เจอผีในห้องนอน"</a>
+                        <div class="noti-date">1 ชั่วโมงที่แล้ว</div>
+                    </div>
+                    <span class="noti-indicator"></span>
+                </li>
+
+                <li class="notification-item">
+                    <span class="noti-icon">💜</span>
+                    <div class="noti-content">
+                        <a href="#" class="user-link">หลอนตัวพ่อ</a> 
+                        กดถูกใจเรื่องเล่าของคุณ:
+                        <a href="#" class="post-link">"เจอผีในห้องนอน"</a>
+                        <div class="noti-date">1 วันที่แล้ว</div>
+                    </div>
+                    </li>
+
+                <li class="notification-item">
+                    <span class="noti-icon">💬</span>
+                    <div class="noti-content">
+                        <a href="#" class="user-link">แอดมินหลอน</a> 
+                        ได้แสดงความคิดเห็นในเรื่องเล่าของคุณ:
+                        <a href="#" class="post-link">"ผีข้างบ้าน"</a>
+                        <div class="noti-date">2 วันที่แล้ว</div>
+                    </div>
+                </li>
+                
+                <li class="notification-item">
+                    <span class="noti-icon">👻</span>
+                    <div class="noti-content">
+                        ยินดีต้อนรับสู่ <span style="color: #A068D9; font-weight: bold;">หลอน Story</span>! 
+                        เราดีใจที่คุณเข้าร่วมชุมชนคนเห็นผี
+                        <div class="noti-date">5 วันที่แล้ว</div>
+                    </div>
+                </li>
+
+            </ul>
+
+        </div>
+
+    </div>
+<a href="help.html" class="floating-help-btn">
+      <i class="fa-solid fa-headset"></i>
+      <span>Help Center</span>
+    </a>
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Direct Message | หลอนStory</title>
+    <link rel="stylesheet" href="style.css">
+        <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+      integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+
+    <style>
+        /* * ----------------------------------------
+         * 1. การตั้งค่าธีมหลัก (จากภาพตัวอย่าง)
+         * ----------------------------------------
+         */
+        @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@400;700&display=swap');
+
+        body {
+            font-family: 'Sarabun', sans-serif;
+            background-color: #1E1E1E; /* สีพื้นหลังหลัก (ดำเทา) */
+            color: #E0E0E0;           /* สีตัวอักษรหลัก (เทาอ่อนเกือบขาว) */
+            margin: 0;
+            padding: 0;
+            /* ทำให้หน้าจอไม่เลื่อน แต่ให้ตัวแชทเลื่อนเอง */
+            overflow: hidden; 
+        }
+
+        /* * ----------------------------------------
+         * 2. ส่วนเมนูบาร์ (คงเดิมเพื่อความต่อเนื่อง)
+         * ----------------------------------------
+         */
+        .header-nav {
+            background-color: #2C2C2C; padding: 1rem 2rem;
+            display: flex; justify-content: space-between;
+            align-items: center; border-bottom: 1px solid #333;
+        }
+        .logo { font-size: 1.5rem; font-weight: bold; color: #FFFFFF; }
+        .search-bar-top input {
+            background-color: #333; border: 1px solid #444; border-radius: 5px;
+            padding: 0.5rem 1rem; color: #FFF; min-width: 300px;
+        }
+        .user-icons { color: #FFF; }
+
+        .sub-nav {
+            background-color: #252525; padding: 0.75rem 0;
+            text-align: center; border-bottom: 1px solid #333;
+        }
+        .sub-nav a {
+            color: #AAAAAA; text-decoration: none; margin: 0 1.5rem;
+            font-weight: bold; padding-bottom: 0.5rem;
+        }
+        .sub-nav a:hover { color: #FFFFFF; }
+
+        /* * ----------------------------------------
+         * 3. Layout หลักของหน้า DM
+         * ----------------------------------------
+         */
+        
+        /* * นี่คือการ์ดหลักที่จะทำตัวเป็น "App" แชท
+         * เราจะกำหนดความสูงให้คงที่ (80% ของหน้าจอ) 
+         */
+        .dm-container {
+            width: 80%;
+            max-width: 1400px;
+            margin: 2rem auto;
+            background-color: #2C2C2C; /* สีพื้นหลังการ์ด */
+            border-radius: 8px;
+            overflow: hidden; /* ซ่อนขอบที่ล้น */
+            display: flex;
+            height: 80vh; /* << สำคัญมาก: กำหนดความสูง */
+        }
+
+        /* * ----------------------------------------
+         * 4. ส่วน Sidebar รายชื่อแชท (ฝั่งซ้าย)
+         * ----------------------------------------
+         */
+        .dm-sidebar {
+            flex: 1; /* ส่วนที่ 1 (แคบกว่า) */
+            border-right: 1px solid #444;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .dm-sidebar-header {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid #444;
+        }
+        .dm-sidebar-header h2 {
+            margin: 0;
+            color: #FFFFFF;
+            font-size: 1.25rem;
+        }
+
+        .convo-list {
+            flex: 1; /* ทำให้ยืดเต็มพื้นที่ที่เหลือ */
+            overflow-y: auto; /* << สำคัญ: ทำให้เลื่อนได้เฉพาะส่วนนี้ */
+        }
+        
+        .convo-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 1.5rem;
+            cursor: pointer;
+            border-bottom: 1px solid #3a3a3a;
+            position: relative;
+        }
+        .convo-item:hover { background-color: #333; }
+        
+        /* แชทที่กำลัง "Active" หรือ "เลือกอยู่" */
+        .convo-item.active {
+            background-color: #333333;
+        }
+
+        .convo-item img {
+            width: 45px; height: 45px;
+            border-radius: 50%; background-color: #444;
+        }
+        
+        .convo-info { flex: 1; }
+        .convo-info .user-name {
+            color: #FFFFFF; font-weight: bold;
+            display: block;
+        }
+        .convo-info .last-message {
+            color: #AAAAAA; font-size: 0.9rem;
+            /* ตัดข้อความที่ยาวเกินไป */
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        
+        /* จุดม่วง (ยังไม่อ่าน) */
+        .convo-item.unread .last-message {
+            color: #E0E0E0;
+            font-weight: bold;
+        }
+        .convo-item.unread .unread-dot {
+            width: 10px; height: 10px;
+            background-color: #A068D9;
+            border-radius: 50%;
+            position: absolute;
+            right: 1.5rem;
+            top: 50%; transform: translateY(-50%);
+        }
+
+        /* * ----------------------------------------
+         * 5. ส่วนหน้าต่างแชท (ฝั่งขวา)
+         * ----------------------------------------
+         */
+        .dm-main {
+            flex: 3; /* ส่วนที่ 2 (กว้างกว่า) */
+            display: flex;
+            flex-direction: column; /* เรียงจากบนลงล่าง (Header, History, Input) */
+        }
+
+        /* 5.1 Header ของแชท */
+        .dm-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #444;
+            background-color: #333; /* สว่างกว่าพื้นหลังเล็กน้อย */
+        }
+        .dm-header img {
+            width: 40px; height: 40px;
+            border-radius: 50%; background-color: #555;
+        }
+        .dm-header .user-name {
+            color: #FFFFFF; font-size: 1.1rem; font-weight: bold;
+        }
+
+        /* 5.2 ประวัติการแชท (Chat Bubbles) */
+        .dm-history {
+            flex: 1; /* << สำคัญ: ทำให้ยืดเต็มพื้นที่ที่เหลือ */
+            overflow-y: auto; /* << สำคัญ: ทำให้เลื่อนได้เฉพาะส่วนนี้ */
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .msg-bubble {
+            max-width: 70%;
+            padding: 0.75rem 1.25rem;
+            border-radius: 18px;
+            line-height: 1.6;
+            font-size: 1rem;
+        }
+        
+        /* ข้อความที่ "ได้รับ" (ฝั่งซ้าย) */
+        .msg-received {
+            background-color: #333333;
+            color: #E0E0E0;
+            align-self: flex-start;
+            border-bottom-left-radius: 5px; /* ทรง bubble */
+        }
+        
+        /* ข้อความที่ "ส่ง" (ฝั่งขวา, สีม่วง) */
+        .msg-sent {
+            background-color: #A068D9;
+            color: #FFFFFF;
+            align-self: flex-end;
+            border-bottom-right-radius: 5px; /* ทรง bubble */
+        }
+
+        /* 5.3 ช่องพิมพ์ข้อความ */
+        .dm-input {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid #444;
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+        .dm-input input[type="text"] {
+            flex: 1; /* ยืดเต็มพื้นที่ */
+            background-color: #333;
+            border: 1px solid #444;
+            border-radius: 20px; /* ทรงแคปซูล */
+            padding: 0.75rem 1.25rem;
+            color: #FFF;
+            font-size: 1rem;
+            font-family: 'Sarabun', sans-serif;
+        }
+        .dm-input .btn-send {
+            background-color: #A068D9;
+            color: #FFFFFF;
+            border: none;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+    </style>
+  </head>
+  <body>
+    <header class="main-header">
+      <div class="logo"><a href="index.html"style="color: #cf6679;">หลอน Story</a></div>
+      <div class="search-bar">
+        <input type="text" placeholder="ค้นหาโพสต์ ผู้ใช้ หรือ แท็ก..." />
+      </div>
+      <div class="user-nav">
+        <a href="noti.html"><i class="fa-solid fa-bell" id="noti"></i></a>
+        <a href="comment.html" class="active"><i class="fa-solid fa-comment" id="chat"></i></a>
+        <a href="profile.html"  ><i class="fa-solid fa-user"></i></a>
+      </div>
+    </header>
+    <div class="page-container">
+        
+    <main class="dm-container">
+        
+        <aside class="dm-sidebar">
+            <div class="dm-sidebar-header">
+                <h2>ข้อความทั้งหมด</h2>
+            </div>
+            
+            <div class="convo-list">
+                <div class="convo-item active">
+                    <img src="img/Profile.jpg" alt="Avatar">
+                    <div class="convo-info">
+                        <span class="user-name">PKa kub P</span>
+                        <span class="last-message">โอเคครับ เดี๋ยวผมลองดู...</span>
+                    </div>
+                </div>
+
+                <div class="convo-item unread">
+                    <img src="img/Profile.jpg" alt="Avatar">
+                    <div class="convo-info">
+                        <span class="user-name">แอดมินหลอน</span>
+                        <span class="last-message">เราได้รับรายงานของคุณแล้ว</span>
+                    </div>
+                    <span class="unread-dot"></span>
+                </div>
+                
+                <div class="convo-item">
+                    <img src="img/Profile.jpg" alt="Avatar">
+                    <div class="convo-info">
+                        <span class="user-name">user-1998</span>
+                        <span class="last-message">ขอบคุณครับสำหรับข้อมูล</span>
+                    </div>
+                </div>
+                <div class="convo-item">
+                    <img src="img/Profile.jpg" alt="Avatar">
+                    <div class="convo-info">
+                        <span class="user-name">user-1998</span>
+                        <span class="last-message">ขอบคุณครับสำหรับข้อมูล</span>
+                    </div>
+                </div>
+                <div class="convo-item">
+                    <img src="img/Profile.jpg" alt="Avatar">
+                    <div class="convo-info">
+                        <span class="user-name">user-1998</span>
+                        <span class="last-message">ขอบคุณครับสำหรับข้อมูล</span>
+                    </div>
+                </div>
+                <div class="convo-item">
+                    <img src="img/Profile.jpg" alt="Avatar">
+                    <div class="convo-info">
+                        <span class="user-name">user-1998</span>
+                        <span class="last-message">ขอบคุณครับสำหรับข้อมูล</span>
+                    </div>
+                </div>
+                <div class="convo-item">
+                    <img src="img/Profile.jpg" alt="Avatar">
+                    <div class="convo-info">
+                        <span class="user-name">user-1998</span>
+                        <span class="last-message">ขอบคุณครับสำหรับข้อมูล</span>
+                    </div>
+                </div>
+                <div class="convo-item">
+                    <img src="img/Profile.jpg" alt="Avatar">
+                    <div class="convo-info">
+                        <span class="user-name">user-1998</span>
+                        <span class="last-message">ขอบคุณครับสำหรับข้อมูล</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <section class="dm-main">
+            
+            <header class="dm-header">
+                <img src="img/Profile.jpg" alt="Avatar">
+                <span class="user-name">PKa kub P</span>
+            </header>
+            
+            <div class="dm-history">
+                
+                <div class="msg-bubble msg-received">
+                    สวัสดีครับ P'Jack
+                </div>
+                
+                <div class="msg-bubble msg-received">
+                    เรื่อง "ผีข้างบ้าน" นี่เรื่องจริงปะครับ?
+                </div>
+
+                <div class="msg-bubble msg-sent">
+                    สวัสดีครับคุณ Pka
+                </div>
+
+                <div class="msg-bubble msg-sent">
+                    50/50 ครับผม ฟังเขามาอีกที 🤣
+                </div>
+                
+                <div class="msg-bubble msg-received">
+                    โอเคครับ เดี๋ยวผมลองดู...
+                </div>
+
+            </div>
+            
+            <form classs="dm-input-form" action="#">
+                <div class="dm-input">
+                    <input type="text" placeholder="พิมพ์ข้อความ...">
+                    <button type="submit" class="btn-send">-></button>
+                </div>
+            </form>
+
+        </section>
+
+    </main>
+    <a href="help.html" class="floating-help-btn">
+      <i class="fa-solid fa-headset"></i>
+      <span>Help Center</span>
+    </a>
+
+    <script src="script.js"></script>
+</body>
+</html>
